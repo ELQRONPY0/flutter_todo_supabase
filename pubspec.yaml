@@ -1,0 +1,38 @@
+name: flutter_todo_supabase
+description: A new Flutter project for a To-Do app with Supabase backend.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Supabase client
+  supabase_flutter: ^2.0.0
+  
+  # State management
+  provider: ^6.0.0
+  
+  # Environment variables
+  flutter_dotenv: ^5.0.0
+  
+  # Icons
+  cupertino_icons: ^1.0.2
+  
+  # Local storage for preferences (Dark Mode)
+  shared_preferences: ^2.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Ensure .env is included as an asset if you want to load it at runtime
+  assets:
+    - .env
