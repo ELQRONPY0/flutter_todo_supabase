@@ -1,409 +1,135 @@
-# تطبيق Flutter To-Do مع Supabase
 # Flutter To-Do App with Supabase
 
-تطبيق Flutter جاهز للإنتاج لإدارة المهام باستخدام Supabase كخلفية (Authentication, Database, Realtime).
-
-A complete, production-ready Flutter To-Do mobile application using Supabase for the backend (Auth, Database, Realtime).
-
-## 📋 قائمة الميزات / Features Checklist
-
-- ✅ **Authentication**: تسجيل الدخول/التسجيل بخيار Email/Password + Google Sign-In (اختياري)
-- ✅ **Tasks CRUD**: إنشاء، قراءة، تحديث، حذف المهام
-- ✅ **Real-time Sync**: المزامنة الفورية عبر الأجهزة (Supabase Realtime)
-- ✅ **RLS Security**: سياسات أمان على مستوى الصفوف (Row Level Security)
-- ✅ **Dark Mode**: تبديل الوضع الداكن
-- ✅ **Profile Screen**: شاشة الملف الشخصي والإعدادات
-- ✅ **Error Handling**: معالجة الأخطاء مع إعادة المحاولة
-- ✅ **Lazy Loading**: تحميل القوائم بشكل كسول (تلقائي مع ListView.builder)
-- ✅ **Swipe to Delete**: حذف المهام بالسحب
-- ✅ **Null-Safe**: كود آمن من Null باستخدام Dart null-safety
+A production-ready Flutter To-Do application leveraging Supabase for backend services, including Authentication, Database, and Realtime capabilities.
 
 ---
 
-## 📦 المتطلبات الأساسية / Prerequisites
+## 📋 Features Checklist
 
-- Flutter SDK (الإصدار 3.0.0 أو أحدث)
-- حساب مجاني في [Supabase](https://supabase.com/)
-- Android Studio / Xcode (للتشغيل على المحاكي أو الجهاز)
+- ✅ **Authentication**: Email/Password login and registration, plus Google Sign-In.
+- ✅ **Tasks CRUD**: Create, Read, Update, and Delete tasks.
+- ✅ **Real-time Sync**: Instant synchronization across devices using Supabase Realtime.
+- ✅ **RLS Security**: Row Level Security policies for data protection.
+- ✅ **Dark Mode**: Seamless dark mode toggle.
+- ✅ **Profile Screen**: Manage user profile and settings.
+- ✅ **Error Handling**: Robust error handling with retry mechanisms.
+- ✅ **Lazy Loading**: Efficient list loading with `ListView.builder`.
+- ✅ **Swipe to Delete**: Intuitive task deletion with swipe gestures.
+- ✅ **Null-Safe**: Fully null-safe codebase using Dart null-safety.
 
 ---
 
-## 🚀 الإعداد السريع / Quick Setup
+## 📦 Prerequisites
 
-### الخطوة 1: إعداد Flutter
+- Flutter SDK (version 3.0.0 or higher).
+- A free [Supabase](https://supabase.com/) account.
+- Android Studio / Xcode for running the app on an emulator or device.
+
+---
+
+## 🚀 Quick Setup
+
+### Step 1: Flutter Setup
 
 ```bash
-# الانتقال إلى مجلد المشروع
+# Navigate to the project directory
 cd flutter_todo_supabase
 
-# تثبيت التبعيات
+# Install dependencies
 flutter pub get
 
-# التحقق من الإعدادات
+# Verify setup
 flutter doctor
 ```
 
-### الخطوة 2: إعداد Supabase (من الصفر)
+### Step 2: Supabase Configuration
 
-اتبع الخطوات التالية بدقة:
+#### 2.1 Create a Supabase Project
 
-#### 2.1 إنشاء مشروع Supabase
+1. Visit [app.supabase.com](https://app.supabase.com) and create a new project.
+2. Save the database password securely.
+3. Copy the **Project URL** and **anon public key** from the API settings.
 
-1. افتح [app.supabase.com](https://app.supabase.com) في المتصفح
-2. اضغط على زر **"New Project"** (أو "مشروع جديد")
-3. أدخل اسم المشروع (مثلاً: `flutter-todo`)
-4. أدخل كلمة مرور قاعدة البيانات (احفظها في مكان آمن!)
-5. اختر المنطقة الأقرب إليك (Region)
-6. اضغط على **"Create new project"**
-7. انتظر دقيقة أو دقيقتين حتى يتم إنشاء المشروع
+#### 2.2 Configure the App
 
-#### 2.2 الحصول على بيانات الاتصال
-
-1. بعد اكتمال الإنشاء، انتقل إلى **Settings** (رمز الترس في الأسفل على اليسار)
-2. اضغط على **API** من القائمة الجانبية
-3. انسخ **Project URL** (مثل: `https://xxxxx.supabase.co`)
-4. انسخ **anon public** key (مفتاح عام طويل يبدأ بـ `eyJhbG...`)
-
-#### 2.3 تكوين التطبيق
-
-1. في مجلد المشروع، انسخ ملف `.env.example` إلى `.env`:
+1. Duplicate `.env.example` to `.env`:
    ```bash
-   # Windows
-   copy .env.example .env
-   
-   # macOS/Linux
    cp .env.example .env
    ```
-
-2. افتح ملف `.env` وأضف بيانات Supabase:
-      ```env
+2. Update `.env` with your Supabase credentials:
+   ```env
    SUPABASE_URL=https://your-project-id.supabase.co
    SUPABASE_ANON_KEY=your-anon-key-here
    ```
 
-   **⚠️ مهم**: استبدل `your-project-id` و `your-anon-key-here` بالقيم الحقيقية من Supabase Dashboard.
+#### 2.3 Initialize the Database
 
-#### 2.4 إنشاء جدول المهام
-
-1. في Supabase Dashboard، اضغط على **SQL Editor** (رمز الطرفية في القائمة الجانبية)
-2. اضغط على **"New query"**
-3. افتح ملف `supabase_migration.sql` من مجلد المشروع
-4. انسخ كل محتوى الملف والصقه في محرر SQL
-5. اضغط على زر **"Run"** (في الأسفل على اليمين)
-6. يجب أن ترى رسالة نجاح: "Success. No rows returned"
-
-#### 2.5 تفعيل Realtime (مهم جداً!)
-
-1. في Supabase Dashboard، اضغط على **Database** (رمز الأسطوانة)
-2. اضغط على **Replication** من القائمة الفرعية
-3. في قسم "Source" ستجد **"0 tables"** (أو عدد الجداول)
-4. اضغط عليه وستظهر قائمة الجداول
-5. فعّل المفتاح (Toggle) بجانب **public.tasks**
-6. اضغط **Save**
-
-**الآن التطبيق جاهز للاستماع للتغييرات في الوقت الفعلي!**
+1. Open `supabase_migration.sql` and execute its contents in the Supabase SQL Editor.
+2. Enable Realtime for the `public.tasks` table in the Replication settings.
 
 ---
 
-## ▶️ تشغيل التطبيق / Running the App
+## ▶️ Running the App
 
-### على Android
+### On Android
 
 ```bash
-# التأكد من وجود محاكي Android أو جهاز متصل
-flutter devices
-
-# تشغيل التطبيق
 flutter run
-
-# أو لجهاز محدد
-flutter run -d <device-id>
 ```
 
-### على iOS (macOS فقط)
+### On iOS (macOS only)
 
 ```bash
-# التأكد من وجود محاكي iOS أو جهاز متصل
-flutter devices
-
-# تشغيل التطبيق
 flutter run
 ```
 
 ---
 
-## ✅ خطوات التحقق اليدوية / Manual Verification Steps
+## ✅ Manual Verification Steps
 
-### 1. تسجيل مستخدم جديد
-
-- شغّل التطبيق
-- اضغط على **"Create an account"**
-- أدخل بريد إلكتروني (مثلاً: `test@example.com`)
-- أدخل كلمة مرور (6 أحرف على الأقل)
-- اضغط **Register**
-- يجب أن ترى رسالة نجاح
-- عد إلى شاشة تسجيل الدخول واضغط **"Already have an account?"**
-- سجّل الدخول بالبيانات نفسها
-
-### 2. إنشاء المهام
-
-- بعد تسجيل الدخول، ستجد قائمة فارغة
-- اضغط على زر **+** (في الأسفل على اليمين)
-- أدخل عنوان المهمة (مثلاً: "شراء الحليب")
-- (اختياري) أضف وصف
-- اضغط **Add Task**
-- يجب أن تظهر المهمة في القائمة فوراً
-
-### 3. تحديث المهمة
-
-- اضغط على مربع الاختيار (Checkbox) بجانب المهمة
-- **التحقق**: يجب أن تُشطَب المهمة وتتحول إلى رمادي
-- اضغط على نص المهمة لتحريرها
-- غيّر العنوان أو الوصف
-- اضغط **Save Changes**
-- **التحقق**: يجب أن تتحدث المهمة فوراً
-
-### 4. حذف المهمة
-
-- اسحب المهمة من اليمين إلى اليسار (Swipe left)
-- **التحقق**: يجب أن تختفي المهمة مع رسالة "Task deleted"
-
-### 5. التحقق من المزامنة الفورية (Real-time)
-
-- سجّل الدخول بنفس الحساب على جهازين (أو محاكي + جهاز)
-- أضف مهمة على الجهاز الأول
-- **التحقق**: يجب أن تظهر المهمة على الجهاز الثاني فوراً بدون تحديث
-
-### 6. التحقق من الأمان (RLS)
-
-- في Supabase Dashboard -> **Table Editor** -> جدول `tasks`
-- يجب أن ترى المهام التي أنشأتها فقط
-- المهام الخاصة بالمستخدمين الآخرين لن تظهر لك
-- هذا بسبب سياسات RLS التي تمنع الوصول إلى بيانات المستخدمين الآخرين
-
-### 7. الوضع الداكن (Dark Mode)
-
-- اضغط على أيقونة الملف الشخصي (في شريط التطبيق)
-- فعّل **Dark Mode**
-- **التحقق**: يجب أن يتحول التطبيق إلى الوضع الداكن فوراً
-- التفضيل محفوظ وسيعمل في الجلسات القادمة
+1. **Register a New User**: Test the registration and login flows.
+2. **Create Tasks**: Add tasks and verify their appearance.
+3. **Update Tasks**: Edit task details and confirm updates.
+4. **Delete Tasks**: Swipe to delete and ensure tasks are removed.
+5. **Real-time Sync**: Test synchronization across multiple devices.
+6. **Dark Mode**: Toggle dark mode and verify persistence.
 
 ---
 
-## 📱 إصدار التطبيق على Google Play Store / Mobile Release
-
-### خطوات عامة:
-
-1. **تحديث أيقونة التطبيق**:
-   ```bash
-   # يمكنك استخدام حزمة flutter_launcher_icons
-   flutter pub add --dev flutter_launcher_icons
-   ```
-   ثم اضبط `flutter_launcher_icons.yaml` وشغّل `flutter pub run flutter_launcher_icons`
-
-2. **إنشاء مفتاح التوقيع**:
-   ```bash
-   keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
-   ```
-
-3. **تكوين التوقيع** في `android/app/build.gradle`:
-   ```gradle
-   android {
-       ...
-       signingConfigs {
-           release {
-               keyAlias upload
-               keyPassword <your-key-password>
-               storeFile file('<path-to-keystore>')
-               storePassword <your-store-password>
-           }
-       }
-       buildTypes {
-           release {
-               signingConfig signingConfigs.release
-           }
-       }
-   }
-   ```
-
-4. **بناء ملف التطبيق**:
-   ```bash
-   flutter build appbundle --release
-   ```
-
-5. **رفع إلى Google Play Console**:
-   - اذهب إلى [Google Play Console](https://play.google.com/console)
-   - أنشئ تطبيقاً جديداً
-   - ارفع ملف `.aab` الموجود في `build/app/outputs/bundle/release/`
-
-### ⚠️ ملاحظات الأمان / Security Notes
-
-- **مفتاح Supabase Anon Key**: آمن نسبياً للاستخدام في تطبيقات الهاتف المحمول **طالما** أن RLS مفعّل بشكل صحيح (وهو كذلك في هذا المشروع)
-- المفتاح Anon يمكن للمستخدمين رؤيته، لكن لا يمكنهم الوصول إلى بيانات المستخدمين الآخرين بسبب RLS
-- للتطبيقات عالية الأمان، يمكنك استخدام Edge Functions أو Proxy Server
-
----
-
-## 🔧 إعداد Google Sign-In (اختياري) / Google Sign-In Setup (Optional)
-
-### في Supabase Dashboard:
-
-1. انتقل إلى **Authentication** -> **Providers**
-2. فعّل **Google**
-3. أدخل **Client ID** و **Client Secret** من [Google Cloud Console](https://console.cloud.google.com/)
-4. في Google Cloud Console، أضف Redirect URL:
-   - `https://<your-project-id>.supabase.co/auth/v1/callback`
-
-### في Google Cloud Console:
-
-1. أنشئ مشروع جديد أو استخدم موجود
-2. فعّل **Google+ API**
-3. في **Credentials** -> أنشئ **OAuth 2.0 Client ID**
-4. اختر نوع التطبيق: **Web application**
-5. أضف Authorized redirect URIs:
-   - `https://<your-project-id>.supabase.co/auth/v1/callback`
-6. انسخ **Client ID** و **Client Secret** إلى Supabase
-
-### في التطبيق:
-
-- الكود موجود بالفعل في `lib/services/supabase_service.dart`
-- زر Google Sign-In موجود في شاشة تسجيل الدخول
-- عند الضغط، سيتم فتح المتصفح للمصادقة
-
----
-
-## 📁 بنية المشروع / Project Structure
+## 📁 Project Structure
 
 ```
-flutter_todo_supabase/
-├── lib/
-│   ├── main.dart                 # نقطة الدخول الرئيسية
-│   ├── models/
-│   │   └── task_model.dart      # نموذج بيانات المهمة
-│   ├── providers/
-│   │   ├── auth_provider.dart   # إدارة حالة المصادقة
-│   │   ├── tasks_provider.dart  # إدارة حالة المهام
-│   │   └── theme_provider.dart  # إدارة الوضع الداكن
-│   ├── screens/
-│   │   ├── login_screen.dart    # شاشة تسجيل الدخول
-│   │   ├── register_screen.dart # شاشة التسجيل
-│   │   ├── home_screen.dart     # الشاشة الرئيسية (قائمة المهام)
-│   │   ├── add_edit_task_screen.dart  # إضافة/تحرير المهام
-│   │   └── profile_screen.dart  # الملف الشخصي والإعدادات
-│   ├── services/
-│   │   └── supabase_service.dart # خدمة التواصل مع Supabase
-│   ├── widgets/
-│   │   └── task_item.dart       # عنصر المهمة في القائمة
-│   └── utils/
-│       └── constants.dart       # الثوابت ومساعدات عامة
-├── pubspec.yaml                 # ملف التبعيات
-├── supabase_migration.sql       # ملف SQL لإنشاء الجداول
-├── .env.example                 # مثال على ملف البيئة
-└── README.md                    # هذا الملف
+lib/
+├── main.dart                 # Entry point
+├── models/
+│   └── task_model.dart      # Task data model
+├── providers/
+│   ├── auth_provider.dart   # Authentication state management
+│   ├── tasks_provider.dart  # Task state management
+│   └── theme_provider.dart  # Theme state management
+├── screens/
+│   ├── login_screen.dart    # Login screen
+│   ├── register_screen.dart # Registration screen
+│   ├── home_screen.dart     # Task list screen
+│   ├── add_edit_task_screen.dart  # Add/Edit task screen
+│   └── profile_screen.dart  # Profile and settings screen
+├── services/
+│   └── supabase_service.dart # Supabase interaction logic
+├── widgets/
+│   └── task_item.dart       # Task list item widget
+└── utils/
+    └── constants.dart       # Constants and utilities
 ```
 
 ---
 
-## 🛠️ State Management (إدارة الحالة)
+## 🛠️ State Management
 
-تم استخدام **Provider** لإدارة الحالة في هذا المشروع للأسباب التالية:
-
-1. **البساطة**: سهل التعلم والاستخدام
-2. **مدمج مع Flutter**: مدعوم رسمياً من Flutter team
-3. **مناسب للمشاريع الصغيرة والمتوسطة**: كافٍ لمشروع To-Do
-4. **سهل الصيانة**: كود نظيف وواضح
-
-### Providers المستخدمة:
-
-- **AuthProvider**: إدارة حالة المصادقة (تسجيل الدخول/الخروج)
-- **TasksProvider**: إدارة حالة المهام (CRUD operations)
-- **ThemeProvider**: إدارة الوضع الداكن/الفاتح
-
-### Real-time Updates:
-
-- يتم استخدام **StreamBuilder** مع Supabase Realtime Stream
-- التحديثات تلقائية بدون الحاجة إلى إعادة تحميل يدوي
-- الكود موجود في `home_screen.dart` و `tasks_provider.dart`
+This project uses **Provider** for state management due to its simplicity and official support by the Flutter team. It is well-suited for small to medium-sized projects.
 
 ---
 
-## 📝 ملاحظات تقنية / Technical Notes
-
-### Real-time Streaming:
-
-- يستخدم `supabase.from('tasks').stream()` للاستماع للتغييرات
-- التحديثات تصل تلقائياً عند إضافة/تحديث/حذف أي مهمة
-- الكود موجود في `lib/services/supabase_service.dart` في دالة `getTasksStream()`
-
-### Error Handling:
-
-- جميع العمليات محمية بـ try-catch
-- رسائل خطأ واضحة للمستخدم
-- إمكانية إعادة المحاولة بعد فشل العملية
-- الكود موجود في `lib/providers/tasks_provider.dart`
-
-### Pagination:
-
-- دالة `getTasksPaginated()` متوفرة في `SupabaseService` للحصول على المهام بصفحات
-- `ListView.builder` يقوم بالتحميل الكسول (Lazy Loading) تلقائياً
-- مناسب للمهام الكثيرة (أكثر من 50)
-
----
-
-## 🔍 اختبار Backend من المتصفح / Testing Backend from Browser
-
-يمكنك اختبار API مباشرة من المتصفح باستخدام curl أو Postman:
-
-### 1. الحصول على JWT Token:
-
-```bash
-curl -X POST 'https://<your-project-id>.supabase.co/auth/v1/token?grant_type=password' \
-  -H "apikey: <your-anon-key>" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"your-password"}'
-```
-
-### 2. الحصول على المهام:
-
-```bash
-curl 'https://<your-project-id>.supabase.co/rest/v1/tasks?select=*' \
-  -H "apikey: <your-anon-key>" \
-  -H "Authorization: Bearer <jwt-token-from-step-1>"
-```
-
-### 3. عرض جدول auth.users:
-
-- في Supabase Dashboard -> **Authentication** -> **Users**
-- يمكنك رؤية جميع المستخدمين المسجلين
-
----
-
-## 🐛 حل المشاكل الشائعة / Troubleshooting
-
-### التطبيق لا يتصل بـ Supabase:
-
-- تحقق من ملف `.env` - يجب أن يحتوي على `SUPABASE_URL` و `SUPABASE_ANON_KEY` الصحيحة
-- تأكد من نسخ القيم من Supabase Dashboard -> Settings -> API
-
-### Real-time لا يعمل:
-
-- تأكد من تفعيل Realtime في Supabase Dashboard -> Database -> Replication
-- تأكد من تفعيل جدول `public.tasks`
-
-### خطأ في RLS (Row Level Security):
-
-- تأكد من تطبيق ملف SQL migration بشكل صحيح
-- تحقق من السياسات في Supabase Dashboard -> Authentication -> Policies
-
-### Google Sign-In لا يعمل:
-
-- تأكد من إعداد OAuth في Supabase Dashboard
-- تحقق من Redirect URL في Google Cloud Console
-- تأكد من تفعيل Google Provider في Supabase
-
----
-
-## 📚 موارد إضافية / Additional Resources
+## 📚 Additional Resources
 
 - [Flutter Documentation](https://flutter.dev/docs)
 - [Supabase Documentation](https://supabase.com/docs)
@@ -412,16 +138,4 @@ curl 'https://<your-project-id>.supabase.co/rest/v1/tasks?select=*' \
 
 ---
 
-## 📄 الترخيص / License
-
-هذا المشروع متاح للاستخدام التعليمي والتجاري بحرية.
-
----
-
-## 🤝 المساهمة / Contributing
-
-تم إنشاء هذا المشروع كدليل تعليمي. يمكنك تحسينه وإضافة ميزات جديدة!
-
----
-
-**تم إنشاؤه بـ ❤️ باستخدام Flutter و Supabase**
+**Built with ❤️ using Flutter and Supabase.**
